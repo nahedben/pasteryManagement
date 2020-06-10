@@ -38,12 +38,13 @@ public class OrdreProduction {
 
     @NotNull
     private BigDecimal quantity;
+    private BigDecimal qtSortieProd;
 
     @JsonFormat(pattern="dd-MM-yyyy")
     private Date SortiePrevisionnel;
 
     @ManyToOne
-    @JoinColumn(name="recette-id")
+    @JoinColumn(name="recette_id")
     private Recette recette;
 
     //cette relation est eliminer pour revenir a la premiere conception

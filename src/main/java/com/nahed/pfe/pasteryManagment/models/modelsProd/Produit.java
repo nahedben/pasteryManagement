@@ -56,7 +56,7 @@ public class Produit extends Product {
 //    @JsonIgnore
 //    private List coefRecProd;
 
-    @OneToOne(mappedBy = "recette_id")
+    @OneToOne(mappedBy = "produit")
     private Recette recette;
 
 

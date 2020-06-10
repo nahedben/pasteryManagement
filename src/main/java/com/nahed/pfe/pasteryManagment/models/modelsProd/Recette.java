@@ -42,7 +42,8 @@ public class Recette {
     @JsonIgnore
     private List ordreProd;
 
-    @OneToOne(mappedBy = "recette")
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name="produit_id")
     private Produit produit;
     /***
      * je viens d'eliminer cette relation entre recette et OrdreProduction
