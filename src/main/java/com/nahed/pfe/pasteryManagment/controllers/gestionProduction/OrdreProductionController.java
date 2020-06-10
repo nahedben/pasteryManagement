@@ -37,15 +37,15 @@ public class OrdreProductionController {
     }
     @Autowired
     private ProduitRepository produitRepository;
-    @PutMapping("OrdPrd/AssignProd/{idOp}/{idPrd}")
-    public OrdreProduction assignProduitToOp(@PathVariable Long idOp, @PathVariable Long idPrd){
-        OrdreProduction ExistOrPr=ordreProductionRepository.getOne(idOp);
-        Produit AssignProd= produitRepository.getOne(idPrd);
+//    @PutMapping("OrdPrd/AssignProd/{idOp}/{idPrd}")
+//    public OrdreProduction assignProduitToOp(@PathVariable Long idOp, @PathVariable Long idPrd){
+//        OrdreProduction ExistOrPr=ordreProductionRepository.getOne(idOp);
+//        Produit AssignProd= produitRepository.getOne(idPrd);
+//
+//        ExistOrPr.setProduit(AssignProd);
+//        return ordreProductionRepository.saveAndFlush(ExistOrPr);
 
-        ExistOrPr.setProduit(AssignProd);
-        return ordreProductionRepository.saveAndFlush(ExistOrPr);
-
-    }
+//    }
 
     /***
      * cette Methode nous permet d'actionner le debut de production
