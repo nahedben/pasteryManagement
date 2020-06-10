@@ -1,0 +1,7 @@
+package com.nahed.pfe.pasteryManagment.repositories.stockRepositories;
+
+import com.nahed.pfe.pasteryManagment.models.modelsStock.Depot;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface DepotRepository extends JpaRepository<Depot,Long> {
+}
