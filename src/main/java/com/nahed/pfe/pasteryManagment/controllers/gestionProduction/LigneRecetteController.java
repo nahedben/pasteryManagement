@@ -46,7 +46,7 @@ public class LigneRecetteController {
     /**
      * To create a LigneRecette we have to just give the consommation
      * here we divide the consommation by 12 to get the unit Consommation
-     * since it is not possible in development to try a Recette for a number less than 12 by produit
+     * since it is not possible in development to try a Recette for a number less than certain amount by produit
      * @param lRec
      * @return
      */
@@ -75,14 +75,14 @@ public class LigneRecetteController {
        BigDecimal cons= ExistLRect.getConsommation();
        if(prPrice!=null){
        ExistLRect.setCoastLine(prPrice.multiply(cons));}
+       System.out.println("this is the consommation:" + cons);
+       System.out.println("This is th "+prPrice);
+       System.out.println("Le cout de la ligne :"+ExistLRect.getCoastLine());
         ExistLRect.setMatierepremier(AddedMatPrem);
 //        BigDecimal consUnt = ExistLRect.getConsommation().divide(BigDecimal.valueOf(12),4, RoundingMode.HALF_UP);
 //        ExistLRect.setConsoUnit(consUnt);
         return ligneRecetteRepository.saveAndFlush(ExistLRect);
     }
-
-
-
     /***
      *
      * Modifier LigneRecette au niveau de la consommation

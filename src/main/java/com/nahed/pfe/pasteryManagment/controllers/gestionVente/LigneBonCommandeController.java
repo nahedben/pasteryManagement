@@ -7,6 +7,7 @@ import com.nahed.pfe.pasteryManagment.repositories.productionRepositories.Produi
 import com.nahed.pfe.pasteryManagment.repositories.venteRepositories.BonCommandeRepository;
 import com.nahed.pfe.pasteryManagment.repositories.venteRepositories.LigneBonCommandeRepository;
 import org.hibernate.sql.AliasGenerator;
+import org.hibernate.validator.internal.xml.CloseIgnoringInputStream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -35,7 +36,14 @@ public class LigneBonCommandeController {
     }
     @Autowired
     private ProduitRepository produitRepository;
-    @PutMapping("/ligneBc/AssignProduit/{idlbc}/{idproduit}")
+
+    /***
+     * Assign produit to ligneBonCommande
+     * @param idlbc
+     * @param idproduit
+     * @return
+     */
+    @PutMapping("/ligneBc/{idlbc}/AssignProduit/{idproduit}")
     public LigneBonCommande AssignProduitToLbc(@PathVariable Long idlbc,@PathVariable Long idproduit){
         LigneBonCommande ExistLbc =ligneBonCommandeRep.getOne(idlbc);
         Produit AssignProd=produitRepository.getOne(idproduit);
@@ -43,9 +51,8 @@ public class LigneBonCommandeController {
         return ligneBonCommandeRep.saveAndFlush(ExistLbc);
     }
 
-    /**
-     * THIS METHOD IS TO Assign Produit to LigneBonCommande
-     *
+    /***
+     * methode de calculer de totalPrice de ligne bon de commande
      * @param id
      * @return
      */
@@ -59,9 +66,8 @@ public class LigneBonCommandeController {
     }
 
     /**
-     * this method is used to change quantity of the LignBonCommande
+     * this method is used to edit quantity of the LignBonCommande
      * @param id
-     * @param lbc
      * @return
      */
     @PutMapping("/ligneBc/changeQty/{id}")
@@ -73,11 +79,18 @@ public class LigneBonCommandeController {
     }
     @Autowired
     private BonCommandeRepository bonCommandeRepository;
-    @PutMapping("/ligneBc/AssignBonC/{idLbc}/{idBc}")
-    public LigneBonCommande assignRecette(@PathVariable Long idLbc, @PathVariable Long idBc){
-        LigneBonCommande ExistLbc=ligneBonCommandeRep.getOne(idLbc);
-        BonCommande AssignBc=bonCommandeRepository.getOne(idBc);
-        List<LigneBonCommande> LstLbc=AssignBc.getLigneBonCommande();
+
+    /***
+     * Assigne bonCommande to ligneBonCommande
+     * @param idLbc
+     * @param idBc
+     * @return
+     */
+    @PutMapping("/ligneBc/{idLbc}/AssignBonC/{idBc}")
+    public LigneBonCommande assignRecette(@PathVariable Long idLbc, @PathVariable Long idBc) {
+        LigneBonCommande ExistLbc = ligneBonCommandeRep.getOne(idLbc);
+        BonCommande AssignBc = bonCommandeRepository.getOne(idBc);
+        List<LigneBonCommande> LstLbc = AssignBc.getLigneBonCommande();
         LstLbc.add(ExistLbc);
         AssignBc.setLigneBonCommande(LstLbc);
         ExistLbc.setBonCommande(AssignBc);

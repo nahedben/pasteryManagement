@@ -20,7 +20,9 @@ public class Client {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Long id;
-    private LocalDateTime datePremAchat;
+
+    @Column(insertable= true, updatable=false)
+    private LocalDateTime dateCreation;
     private String nom;
     private String prenom;
     private String Email;
@@ -30,6 +32,7 @@ public class Client {
     private BigDecimal chiffreAchat;
     private BigDecimal credit;
     private String note;
+    private LocalDateTime lastVisit;
 
     @OneToMany(cascade = CascadeType.ALL, targetEntity= Facture.class, mappedBy= "client")
     @JsonIgnore
@@ -38,5 +41,11 @@ public class Client {
     @OneToMany(cascade = CascadeType.ALL, targetEntity=BonCommande.class, mappedBy="client")
     @JsonIgnore
     private List bonCommande;
+
+    @PrePersist
+    void onDateCreation(){
+        this.setDateCreation(LocalDateTime.now());
+
+    }
 
 }

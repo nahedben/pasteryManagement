@@ -45,9 +45,9 @@ public class Produit extends Product {
     @OneToMany(cascade = CascadeType.ALL, targetEntity = LigneBonCommande.class, mappedBy="produit")
     @JsonIgnore
     private List ligneBonCommande;
-    /**
-     * c'est ma deuxieme modification de mettre en place une relation OnToMany entre Produit et Ordre de Production
-     */
+//    /**
+//     * c'est ma deuxieme modification de mettre en place une relation OnToMany entre Produit et Ordre de Production
+//     */
 //    @OneToMany(cascade = CascadeType.ALL, targetEntity = OrdreProduction.class, mappedBy="produit")
 //    @JsonIgnore
 //    private List ordreProduction;
@@ -56,7 +56,8 @@ public class Produit extends Product {
 //    @JsonIgnore
 //    private List coefRecProd;
 
-    @OneToOne(mappedBy = "produit")
+    @OneToOne(cascade = CascadeType.ALL,mappedBy = "produit")
+    @JsonIgnore
     private Recette recette;
 
 

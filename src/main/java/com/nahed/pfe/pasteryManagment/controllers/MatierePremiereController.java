@@ -91,7 +91,7 @@ public class MatierePremiereController {
 
     /**
      * with this method we only can modify the "Quantity" and this is a very dangerous method since from it we are
-     * able to act manually on stock and it would be made only with an access
+     * able to act manually on stock and it would be made only with an access on the front end
      * @param mat
      * @param id
      * @return

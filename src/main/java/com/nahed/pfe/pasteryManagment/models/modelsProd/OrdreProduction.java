@@ -30,6 +30,7 @@ public class OrdreProduction {
     private LocalDateTime created;
     private boolean debutProd;
 //    @Column(insertable= true, updatable=false)
+    private boolean stockupdate;
     private LocalDateTime dateLancement;
     private boolean prodFinish;
     private LocalDateTime sortieProd;
