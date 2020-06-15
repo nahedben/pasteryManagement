@@ -1,5 +1,6 @@
 package com.nahed.pfe.pasteryManagment.models.modelVente;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.nahed.pfe.pasteryManagment.models.modelsProd.Produit;
 import lombok.*;
 
@@ -12,6 +13,7 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @ToString
 @EqualsAndHashCode
+@JsonIgnoreProperties({"hibernateLazyInitializer","handler"})
 public class LigneFacture {
 
     @Id

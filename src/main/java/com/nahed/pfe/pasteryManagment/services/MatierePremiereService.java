@@ -1,7 +1,7 @@
 package com.nahed.pfe.pasteryManagment.services;
 
 import com.nahed.pfe.pasteryManagment.models.modelsCommon.MatierePremiere;
-import com.nahed.pfe.pasteryManagment.repositories.MatierePremierRepository;
+import com.nahed.pfe.pasteryManagment.repositories.stockRepositories.MatierePremierRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

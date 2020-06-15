@@ -4,7 +4,7 @@ import com.nahed.pfe.pasteryManagment.models.modelsCommon.MatierePremiere;
 import com.nahed.pfe.pasteryManagment.models.modelsProd.LigneRecette;
 import com.nahed.pfe.pasteryManagment.models.modelsProd.Recette;
 import com.nahed.pfe.pasteryManagment.repositories.productionRepositories.LigneRecetteRepository;
-import com.nahed.pfe.pasteryManagment.repositories.MatierePremierRepository;
+import com.nahed.pfe.pasteryManagment.repositories.stockRepositories.MatierePremierRepository;
 import com.nahed.pfe.pasteryManagment.repositories.productionRepositories.RecetteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

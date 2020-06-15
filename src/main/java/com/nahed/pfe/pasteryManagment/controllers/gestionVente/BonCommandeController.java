@@ -3,19 +3,15 @@ package com.nahed.pfe.pasteryManagment.controllers.gestionVente;
 import com.nahed.pfe.pasteryManagment.models.modelVente.BonCommande;
 import com.nahed.pfe.pasteryManagment.models.modelVente.Client;
 import com.nahed.pfe.pasteryManagment.models.modelVente.LigneBonCommande;
-import com.nahed.pfe.pasteryManagment.repositories.productionRepositories.LigneRecetteRepository;
 import com.nahed.pfe.pasteryManagment.repositories.venteRepositories.BonCommandeRepository;
-import com.nahed.pfe.pasteryManagment.repositories.venteRepositories.ClientRepositoriy;
+import com.nahed.pfe.pasteryManagment.repositories.venteRepositories.ClientRepository;
 import com.nahed.pfe.pasteryManagment.repositories.venteRepositories.LigneBonCommandeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.web.bind.annotation.*;
 
-import javax.swing.text.StyledEditorKit;
 import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -149,7 +145,7 @@ public class BonCommandeController {
     }
 
     @Autowired
-    private ClientRepositoriy clientRepositoriy;
+    private ClientRepository clientRepositoriy;
 
     /**
      * Assign client au Bon Commande
@@ -164,7 +160,6 @@ public class BonCommandeController {
         bc.setClient(cl);
         return bonCommandeRepository.saveAndFlush(bc);
     }
-
 
     @DeleteMapping("/BonCommande/{id}")
     public void removeBc(@PathVariable Long id){

@@ -6,23 +6,18 @@ import com.nahed.pfe.pasteryManagment.models.modelsProd.OrdreProduction;
 import com.nahed.pfe.pasteryManagment.models.modelsProd.Produit;
 import com.nahed.pfe.pasteryManagment.models.modelsProd.Recette;
 import com.nahed.pfe.pasteryManagment.models.modelsStock.Depot;
-import com.nahed.pfe.pasteryManagment.repositories.MatierePremierRepository;
+import com.nahed.pfe.pasteryManagment.repositories.stockRepositories.MatierePremierRepository;
 import com.nahed.pfe.pasteryManagment.repositories.productionRepositories.LigneRecetteRepository;
 import com.nahed.pfe.pasteryManagment.repositories.productionRepositories.OrdreProductionRepository;
 import com.nahed.pfe.pasteryManagment.repositories.productionRepositories.ProduitRepository;
 import com.nahed.pfe.pasteryManagment.repositories.productionRepositories.RecetteRepository;
 import com.nahed.pfe.pasteryManagment.repositories.stockRepositories.DepotRepository;
-import org.aspectj.weaver.ast.Or;
-import org.hibernate.criterion.Order;
-import org.hibernate.id.BulkInsertionCapableIdentifierGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.security.PermitAll;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.*;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 

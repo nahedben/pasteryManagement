@@ -28,7 +28,8 @@ public class Client {
     private String Email;
     private String phone;
     private String address;
-    private String tax;
+    private BigDecimal tax;
+    private String matriculeFiscal;
     private BigDecimal chiffreAchat;
     private BigDecimal credit;
     private String note;

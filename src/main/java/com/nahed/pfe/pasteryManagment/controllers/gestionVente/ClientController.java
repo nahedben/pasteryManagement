@@ -1,17 +1,19 @@
 package com.nahed.pfe.pasteryManagment.controllers.gestionVente;
 
 import com.nahed.pfe.pasteryManagment.models.modelVente.Client;
-import com.nahed.pfe.pasteryManagment.repositories.venteRepositories.ClientRepositoriy;
+import com.nahed.pfe.pasteryManagment.repositories.venteRepositories.ClientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1")
 public class ClientController {
     @Autowired
-    private ClientRepositoriy clientRepositoriy;
+    private ClientRepository clientRepositoriy;
     @PostMapping("client")
     public Client createClient(@RequestBody Client cl){
         return clientRepositoriy.saveAndFlush(cl);
@@ -21,8 +23,12 @@ public class ClientController {
         return clientRepositoriy.findAll();
     }
     @GetMapping("client/{id}")
-    public Client RetreiveCLientBId(@PathVariable Long id){
-        return clientRepositoriy.getOne(id);
+    public ResponseEntity<Client> RetreiveCLientBId(@PathVariable Long id){
+        Optional<Client> cl= clientRepositoriy.findById(id);
+        if(cl.isPresent())
+            return ResponseEntity.ok(cl.get());
+
+        return ResponseEntity.notFound().build();
     }
     @PutMapping("client/{id}")
     public Client EditClient(@RequestBody Client cl, @PathVariable Long id){
@@ -35,5 +41,13 @@ public class ClientController {
         if(cl.getTax()!=null){ExistCl.setTax(cl.getTax());}
         if(cl.getCredit()!=null){ExistCl.setCredit(cl.getCredit());}
         return clientRepositoriy.saveAndFlush(ExistCl);
+    }
+    @DeleteMapping("client/{id}")
+    public ResponseEntity<Client> removeClient(@PathVariable Long id){
+        Optional<Client> cl=clientRepositoriy.findById(id);
+        if(cl.isPresent()){
+            clientRepositoriy.deleteById(id);
+         return ResponseEntity.ok().build();}
+       return  ResponseEntity.notFound().build();
     }
 }

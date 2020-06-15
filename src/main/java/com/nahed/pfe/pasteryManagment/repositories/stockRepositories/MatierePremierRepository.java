@@ -1,4 +1,4 @@
-package com.nahed.pfe.pasteryManagment.repositories;
+package com.nahed.pfe.pasteryManagment.repositories.stockRepositories;
 
 import com.nahed.pfe.pasteryManagment.models.modelsCommon.MatierePremiere;
 import org.springframework.data.jpa.repository.JpaRepository;

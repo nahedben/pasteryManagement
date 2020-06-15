@@ -1,11 +1,11 @@
-package com.nahed.pfe.pasteryManagment.controllers;
+package com.nahed.pfe.pasteryManagment.controllers.GestionStock;
 
 import com.nahed.pfe.pasteryManagment.models.modelsStock.Depot;
 import com.nahed.pfe.pasteryManagment.models.modelsStock.Famille;
 import com.nahed.pfe.pasteryManagment.models.modelsCommon.MatierePremiere;
 import com.nahed.pfe.pasteryManagment.repositories.stockRepositories.DepotRepository;
 import com.nahed.pfe.pasteryManagment.repositories.stockRepositories.FamilleRepository;
-import com.nahed.pfe.pasteryManagment.repositories.MatierePremierRepository;
+import com.nahed.pfe.pasteryManagment.repositories.stockRepositories.MatierePremierRepository;
 import com.nahed.pfe.pasteryManagment.services.MatierePremiereService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

@@ -25,7 +25,6 @@ public class Facture {
     private LocalDateTime dateFacture;
 
     private boolean Factvalidation;
-    private BigDecimal totalPriceHt;
     private BigDecimal taxValue;
     private BigDecimal totalPriceTtc;
 
@@ -41,6 +40,11 @@ public class Facture {
     @ManyToOne
     @JoinColumn(name="client_id")
     private Client client;
+
+    @PrePersist
+    void onDateFacture(){
+        this.setDateFacture(LocalDateTime.now());
+    }
 
 
 
