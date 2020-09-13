@@ -7,8 +7,10 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 public interface MatierePremierRepository extends JpaRepository<MatierePremiere,Long> {
-    List<MatierePremiere> findAllByFamilleId(Long  id);
+//    List<MatierePremiere> findAllByFamilleId(Long  id);
     List<MatierePremiere> findAllByDepotId(Long id);
+  //  MatierePremiere findByLigneBonReceptionsId(Long id);
+
 
     //native query using for getting all matierePremiere with stock limit alert
     @Query(value="SELECT * FROM matiere_premiere AS mt WHERE mt.stock_limit_alert=true", nativeQuery = true)

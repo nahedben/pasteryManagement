@@ -1,5 +1,6 @@
 package com.nahed.pfe.pasteryManagment.models.modelsProd;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.nahed.pfe.pasteryManagment.models.modelsCommon.MatierePremiere;
 import lombok.AllArgsConstructor;
@@ -35,6 +36,7 @@ public class LigneRecette {
 
    @ManyToOne
    @JoinColumn(name="recette_id")
+   @JsonIgnore
    private Recette recette;
 
 }

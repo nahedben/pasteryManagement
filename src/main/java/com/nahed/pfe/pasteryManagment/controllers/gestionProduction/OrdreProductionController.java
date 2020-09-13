@@ -1,10 +1,8 @@
 package com.nahed.pfe.pasteryManagment.controllers.gestionProduction;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import com.nahed.pfe.pasteryManagment.models.modelsCommon.MatierePremiere;
-import com.nahed.pfe.pasteryManagment.models.modelsProd.LigneRecette;
-import com.nahed.pfe.pasteryManagment.models.modelsProd.OrdreProduction;
-import com.nahed.pfe.pasteryManagment.models.modelsProd.Produit;
-import com.nahed.pfe.pasteryManagment.models.modelsProd.Recette;
+import com.nahed.pfe.pasteryManagment.models.modelsProd.*;
 import com.nahed.pfe.pasteryManagment.models.modelsStock.Depot;
 import com.nahed.pfe.pasteryManagment.repositories.stockRepositories.MatierePremierRepository;
 import com.nahed.pfe.pasteryManagment.repositories.productionRepositories.LigneRecetteRepository;
@@ -23,13 +21,13 @@ import java.util.List;
 
 import static com.nahed.pfe.pasteryManagment.models.modelsCommon.ProductUnitEnum.UNIT;
 import static java.time.LocalDateTime.now;
-
+@CrossOrigin
 @RestController
 @RequestMapping("/api/v1")
 public class OrdreProductionController {
     @Autowired
     private OrdreProductionRepository ordreProductionRepository;
-
+    @JsonView(View.Summary.class)
     @GetMapping("/OrdPrd")
     public List<OrdreProduction> retreiveAllOrderProd(){
         return ordreProductionRepository.findAll();
@@ -159,10 +157,11 @@ public class OrdreProductionController {
     public OrdreProduction startProd(@PathVariable Long id){
         OrdreProduction Existprd= ordreProductionRepository.getOne(id);
         if(Existprd.isDebutProd()==false){
+            updateStockMatPrem(id);
             LocalDateTime now =LocalDateTime.now();
         Existprd.setDateLancement(now);
-        ordreProductionRepository.save(Existprd);
         Existprd.setDebutProd(true);
+
         }
         return ordreProductionRepository.saveAndFlush(Existprd);
     }
@@ -176,25 +175,24 @@ public class OrdreProductionController {
     @Autowired
     private ProduitRepository produitRepository;
     @PutMapping("OrdPrd/finishProd/{id}")
-    public OrdreProduction finishProd(@PathVariable Long id,@RequestBody OrdreProduction op){
+    public OrdreProduction finishProd(@PathVariable Long id){
         OrdreProduction ExistPrd= ordreProductionRepository.getOne(id);
         LocalDateTime start=ExistPrd.getDateLancement();
         LocalDateTime now=LocalDateTime.now();
-        System.out.println("La date de lancement: "+start);
-        System.out.println("la date Actuel: "+now);
+
 
         Duration period = Duration.between(start,now);
-        System.out.println("The difference between stat and now: "+period);
+
         long diff = period.toMinutes();
-        System.out.println("The difference between start and now: "+diff);
+
 
         //cette condition nous permet de ne pas permettre l'action de valider une production qu'apres 10min de son lancement
-        if(diff>10) {
+//        if(diff>10) {
             if (ExistPrd.isProdFinish() == false) {
                 ExistPrd.setSortieProd(now);
-                System.out.println("La date Sortie de production est :"+ExistPrd.getSortieProd());
+
                 ExistPrd.setProdFinish(true);
-                ExistPrd.setQtSortieProd(op.getQtSortieProd());
+                ExistPrd.setQtSortieProd(ExistPrd.getQtSortieProd());
 
 //                Duration tpsProd = Duration.between(start,now);
 //               long timeSpend= tpsProd.toMinutes();
@@ -202,10 +200,10 @@ public class OrdreProductionController {
               Recette rc= ExistPrd.getRecette();
               Produit prd= rc.getProduit();
                 BigDecimal initQtprd= prd.getQuantity();
-              prd.setQuantity(initQtprd.add(ExistPrd.getQtSortieProd()));
+              prd.setQuantity(initQtprd.add(ExistPrd.getQuantity()));
               produitRepository.saveAndFlush(prd);
             }
-        }
+//        }
         return ordreProductionRepository.saveAndFlush(ExistPrd);
     }
 
@@ -243,6 +241,13 @@ public class OrdreProductionController {
     @DeleteMapping("OrdPrd/{id}")
     public void removeProductionOrder(@PathVariable Long id){
         ordreProductionRepository.deleteById(id);
+    }
+
+    @PostMapping("OrdPrd/assignRecett/{idrec}")
+   public OrdreProduction createOrderProdAssRecet( @PathVariable Long idrec, @RequestBody OrdreProduction orp){
+        OrdreProduction newOrp= addOrderProd(orp);
+        assignRecetToOp(newOrp.getId(),idrec);
+        return newOrp;
     }
 
 }

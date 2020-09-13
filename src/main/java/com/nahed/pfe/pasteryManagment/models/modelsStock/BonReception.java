@@ -12,6 +12,7 @@ import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -29,16 +30,14 @@ public class BonReception {
     private String numBonRecep;
 
     @Column(name="date_bon_reception")
-    @Temporal(TemporalType.DATE)
     @JsonFormat(pattern = "dd-MM-yyyy")
-    private Date dateBr;
+    private LocalDate dateBr;
 
     @Column(name="nom_livreur")
     private String nomLivreur;
     @Column(name="mat_livreur")
     private String matLivreur;
     private String note;
-
 
     @Column(name="montant_tot_ht")
     private BigDecimal montTotHt;

@@ -15,6 +15,8 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
 
+
+@CrossOrigin
 @RestController
 @RequestMapping("/api/v1")
 public class RecetteController {
@@ -38,6 +40,13 @@ public class RecetteController {
      */
     @PostMapping("/Recette")
     public Recette createRecette(@RequestBody Recette rc){
+        List<LigneRecette> lstLinRece= rc.getLigneRecette();
+        BigDecimal totaCost=BigDecimal.valueOf(0);
+        for(LigneRecette lr: lstLinRece){
+            BigDecimal cst= lr.getCoastLine();
+            totaCost=totaCost.add(cst);
+        }
+        rc.setRecetteCoast(totaCost);
         return recetteRepository.saveAndFlush(rc);
     }
     @Autowired
@@ -82,14 +91,16 @@ public class RecetteController {
         List<LigneRecette> lstLr=Rc.getLigneRecette();
         return lstLr;
     }
+
     @DeleteMapping("/Recette/{id}")
     public void removeRecette(@PathVariable Long id){
         recetteRepository.deleteById(id);
     }
     @Autowired
     private ProduitRepository produitRepository;
+
     @PutMapping("/Recette/{idRc}/assigproduit/{idprd}")
-    public Recette assignRecetteToProduit(@PathVariable Long idprd, @PathVariable Long idRc){
+    public Produit assignRecetteToProduit(@PathVariable Long idprd, @PathVariable Long idRc){
         Produit prd =produitRepository.getOne(idprd);
         Recette rc=recetteRepository.getOne(idRc);
         BigDecimal coutRc=rc.getRecetteCoast();
@@ -99,16 +110,14 @@ public class RecetteController {
         BigDecimal couprd= coutRc.divide(BigDecimal.valueOf(CefRpr),3, RoundingMode.HALF_EVEN);
         System.out.println(couprd);
         prd.setProdCoast(couprd);
-        produitRepository.saveAndFlush(prd);
-
-
-
         BigDecimal diff=prd.getUnitPrice().subtract(prd.getProdCoast());
         Integer marge=(diff.divide(prd.getUnitPrice(),4,RoundingMode.HALF_EVEN)).multiply(BigDecimal.valueOf(100)).intValue();
         prd.setPercentageMargin(marge);
-
          rc.setProduit(prd);
-        return recetteRepository.saveAndFlush(rc);
+        recetteRepository.saveAndFlush(rc);
+        return  produitRepository.saveAndFlush(prd);
+
     }
+
 
 }

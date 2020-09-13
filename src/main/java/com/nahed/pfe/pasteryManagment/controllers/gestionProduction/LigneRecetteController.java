@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.util.List;
-
+@CrossOrigin
 @RestController
 @RequestMapping("/api/v1")
 public class LigneRecetteController {
@@ -47,13 +47,21 @@ public class LigneRecetteController {
      * To create a LigneRecette we have to just give the consommation
      * here we divide the consommation by 12 to get the unit Consommation
      * since it is not possible in development to try a Recette for a number less than certain amount by produit
-     * @param lRec
+     * @param
      * @return
      */
+    @PostMapping("/ligneRecetteNew")
+    public LigneRecette addLigne(@RequestBody LigneRecette lrec){
+        return ligneRecetteRepository.saveAndFlush(lrec);
+    }
     @PostMapping("/ligneRecette")
     public LigneRecette addNewLignRec(@RequestBody LigneRecette lRec){
+        BigDecimal prPrice =lRec.getMatierepremier().getPurchaseUnitPrice();
         BigDecimal Cons=lRec.getConsommation();
         lRec.setConsommation(Cons);
+        if(prPrice!=null){
+            lRec.setCoastLine(prPrice.multiply(Cons));
+        }
         return ligneRecetteRepository.saveAndFlush(lRec);
     }
     @Autowired

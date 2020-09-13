@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.util.List;
-
+@CrossOrigin
 @RestController
 @RequestMapping("/api/v1")
 public class BonReceptionController {
@@ -22,9 +22,10 @@ public class BonReceptionController {
         return bonReceptionRepository.findAll();
     }
     @GetMapping("/bonrecep/{id}")
-    public BonReception retreiveRequestBonRecp(@PathVariable Long id){
+    public BonReception retreiveBonRecep(@PathVariable Long id){
         return bonReceptionRepository.getOne(id);
     }
+
     @PostMapping("/bonrecep")
     public BonReception addBonrecep(@RequestBody BonReception bonReception) {
         return bonReceptionRepository.saveAndFlush(bonReception);
@@ -44,7 +45,7 @@ public class BonReceptionController {
 
     /****
      * With this method we are able to have the final result of the MontantTotalTTC\
-     * by enting the id of the Bon de reception into the path
+     * by entring the id of the Bon de reception into the path
      * @param id
      * @return
      */

@@ -15,7 +15,7 @@ import java.math.BigDecimal;
 import java.text.Format;
 import java.time.LocalDateTime;
 import java.util.List;
-
+@CrossOrigin
 @RestController
 @RequestMapping("/api/v1")
 public class FactureController {
@@ -27,6 +27,13 @@ public class FactureController {
      * @param fct
      * @return
      */
+    @Autowired
+    private LigneFactureRepository ligneFactureRepository;
+
+//    @GetMapping("facture/ligmes/idfct")
+//    public List<LigneFacture> retreiveLgnFctFccture(@PathVariable Long idfct){
+//        return ligneFactureRepository.findAllByFactureId(idfct);
+//    }
     @PostMapping("/facture")
     public Facture createFacture(@RequestBody Facture fct){
         return factureRepository.saveAndFlush(fct);
@@ -42,6 +49,7 @@ public class FactureController {
     }
     @Autowired
     private ClientRepository clientRepository;
+
     @PutMapping("/facture/{idfct}/assignClient/{idcl}")
     public Facture assignClientToFacture(@PathVariable Long idfct, @PathVariable Long idcl){
         Facture fc=factureRepository.getOne(idfct);
@@ -70,8 +78,8 @@ public class FactureController {
         fc.setTotalPriceTtc(totalFact);
         return factureRepository.saveAndFlush(fc);
     }
-    @Autowired
-    private LigneFactureRepository ligneFactureRepository;
+//    @Autowired
+//    private LigneFactureRepository ligneFactureRepository;
     @Autowired
     private ProduitRepository produitRepository;
 
@@ -87,14 +95,18 @@ public class FactureController {
         if(fc.isFactvalidation()==false){
             for(LigneFacture lf:lstLf) {
                 Produit pr = lf.getProduit();
+                System.out.println("Le produit est:"+pr.getName());
                 BigDecimal existQt = pr.getQuantity();
                 BigDecimal Qtvendu = lf.getQuantity();
                 BigDecimal newQt=new BigDecimal("0");
                 newQt= existQt.subtract(Qtvendu);
+                System.out.println("La nouvelle quantite de stock"+newQt);
                 pr.setQuantity(newQt);
+
                 System.out.println("Le produit: "+pr.getName()+"qtExistant: "+existQt+" La quantite vendu: "+ Qtvendu+ " le nouveau stock: "+newQt);
                 produitRepository.saveAndFlush(pr);
             }
+            System.out.println(" La facture est deja valide");
         }
         fc.setFactvalidation(true);
         return factureRepository.saveAndFlush(fc);
@@ -114,6 +126,7 @@ public class FactureController {
            cl.setChiffreAchat(chiffAchaCl.add(Montvente));
                 }
            cl.setLastVisit(LocalDateTime.now());
+
 
 
                clientRepository.saveAndFlush(cl);

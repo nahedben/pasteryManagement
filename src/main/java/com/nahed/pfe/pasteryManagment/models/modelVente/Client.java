@@ -46,7 +46,10 @@ public class Client {
     @PrePersist
     void onDateCreation(){
         this.setDateCreation(LocalDateTime.now());
+        this.setLastVisit(LocalDateTime.now());
+
 
     }
+
 
 }

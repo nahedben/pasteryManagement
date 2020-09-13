@@ -2,6 +2,7 @@ package com.nahed.pfe.pasteryManagment.models.modelsProd;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonView;
 import lombok.*;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
@@ -34,7 +35,6 @@ public class Recette {
     @OneToMany(cascade=CascadeType.ALL,targetEntity = LigneRecette.class,
             mappedBy ="recette", orphanRemoval = true)
     @LazyCollection(LazyCollectionOption.FALSE)
-    @JsonIgnore
     private List ligneRecette;
 
 
@@ -44,14 +44,13 @@ public class Recette {
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name="produit_id")
+//    @JsonIgnore
+    @JsonView(View.Summary.class)
     private Produit produit;
     /***
      * je viens d'eliminer cette relation entre recette et OrdreProduction
      * et la remplacer avec Produit et OrdreProduction puisque un produit peut avoir plusieurs recette.
      */
-//    @ManyToOne
-//    @JoinColumn(name="oPrd_id")
-//    private OrdreProduction oPrd;
 
     @PrePersist
         void onDateCreation(){

@@ -12,8 +12,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.math.RoundingMode;
 import java.util.List;
-
+@CrossOrigin
 @RestController
 @RequestMapping("/api/v1")
 public class LigneBonReceptionController {
@@ -29,13 +31,13 @@ public class LigneBonReceptionController {
 
         @GetMapping("/LigneBonReceps")
         public List<LigneBonReception> getAllTheBon(){
-//        List<MatierePremiere> lmt= matierePremierRepository.findAll();
-//        List<LigneBonReception> ltlbr =ligneBonReceptionRepository.findAll();
-//        for(LigneBonReception lr : ltlbr){
-//            ligneBonReceptionService.automateDescriptionBr(lr,lmt);
-//        }
         return ligneBonReceptionRepository.findAll();
     }
+    @GetMapping("/LigneBonReceps/{idbr}")
+    public List<LigneBonReception> getAllLbrfromBr(@PathVariable Long idbr){
+            return ligneBonReceptionRepository.findAllByBonReceptionId(idbr);
+    }
+
         @GetMapping("LigneBonRecep/{id}")
         public LigneBonReception retreiveBR(@PathVariable Long id){
         return ligneBonReceptionRepository.getOne(id);
@@ -48,7 +50,7 @@ public class LigneBonReceptionController {
      * @return
      */
     @PostMapping("/LigneBonRecep")
-        public LigneBonReception addRecetLBRecep(@RequestBody LigneBonReception lbr){
+        public LigneBonReception addLgnBRecep(@RequestBody LigneBonReception lbr){
         lbr.setTotalAffected(false);
         lbr.setQtyInserted(false);
         return ligneBonReceptionRepository.saveAndFlush(lbr);
@@ -118,15 +120,17 @@ public class LigneBonReceptionController {
             ExistBr.setMontTotHt(MtHTax);
             ExistBr.setMontTotTtc(MtTtc);
             mp.setQuantity(finalQt);
+            if(dp!=null){
             dp.setActualCharge(nouvMpQt);
             mp.setDepot(dp);
+               }
             ExistFr.setCompte(newCompte);
 
             lbrExist.setMatierepremier(mp);
-
+            depotRepository.saveAndFlush(dp);
             fournisseurRepository.save(ExistFr);
             bonReceptionRepository.save(ExistBr);
-            depotRepository.saveAndFlush(dp);
+
             matierePremierRepository.saveAndFlush(mp);
             return ligneBonReceptionRepository.saveAndFlush(lbrExist);
 
@@ -158,6 +162,7 @@ public class LigneBonReceptionController {
 
             mp.setQuantity((mp.getQuantity().add((lbr.getQuantity()))));
             dp.setActualCharge(dpQt.add(lbr.getQuantity()));
+            depotRepository.saveAndFlush(dp);
 
         //calculate the totalprice
             lbr.setTotal(mp.getPurchaseUnitPrice().multiply(lbr.getQuantity()));
@@ -188,29 +193,37 @@ public class LigneBonReceptionController {
     public LigneBonReception assiBonRecep(@PathVariable Long idlbr,@PathVariable Long idbr){
         LigneBonReception Existlbr =ligneBonReceptionRepository.getOne(idlbr);
         BonReception assibr =bonReceptionRepository.getOne(idbr);
-        //adding the amount of the total price to Bon Ligne de reception to Bon Reception
-        if(Existlbr.isTotalAffected()==false){
+        Fournisseur fr =assibr.getFournisseur();
+        float x=1+(float)fr.getTax()/100;
+        BigDecimal tx=new BigDecimal(x);
+        //adding the amount of the total price Bon Ligne de reception to Bon Reception
+        if(Existlbr.isTotalAffected()==false) {
 
-            if(assibr.getMontTotHt()==null){
-                BigDecimal startV=new BigDecimal("0");
-                assibr.setMontTotHt(startV.add(Existlbr.getTotal()));
-            }
+                if (assibr.getMontTotHt() == null) {
+//                    BigDecimal startV = new BigDecimal("0");
+                  assibr.setMontTotHt(new BigDecimal("0"));}
+                if(assibr.getMontTotTtc()==null){
+                    assibr.setMontTotTtc(new BigDecimal("0"));
+                }
+                    assibr.setMontTotHt(assibr.getMontTotHt().add(Existlbr.getTotal()));
+                    assibr.setMontTotTtc(assibr.getMontTotHt().multiply(tx.setScale(2, RoundingMode.FLOOR)));
+                    Existlbr.setTotalAffected(true);
+                    Existlbr.setBonReception(assibr);
+                    bonReceptionRepository.save(assibr);
+                    ligneBonReceptionRepository.save(Existlbr);
+        return ligneBonReceptionRepository.saveAndFlush(Existlbr);
+        }
 
-
-                assibr.setMontTotHt(assibr.getMontTotHt().add(Existlbr.getTotal()));
-                Existlbr.setTotalAffected(true);
-                bonReceptionRepository.save(assibr);
-                ligneBonReceptionRepository.save(Existlbr);
-                } else{
             System.out.println(Existlbr.getTotal()+" is Already assigned you aren't allowed to do it again");
                   //  assibr.setMontTotHt(assibr.getMontTotTtc());
-        }
-        List<LigneBonReception> ltLignbr =assibr.getLignebonreceptions();
-        ltLignbr.add(Existlbr);
 
-        assibr.setLignebonreceptions(ltLignbr);
-        Existlbr.setBonReception(assibr);
-        bonReceptionRepository.saveAndFlush(assibr);
+////        List<LigneBonReception> ltLignbr =assibr.getLignebonreceptions();
+//        List<LigneBonReception> ltLignbr=ligneBonReceptionRepository.findAllByBonReceptionId(idbr);
+//        ltLignbr.add(Existlbr);
+//
+//        assibr.setLignebonreceptions(ltLignbr);
+//        Existlbr.setBonReception(assibr);
+//        bonReceptionRepository.saveAndFlush(assibr);
         return ligneBonReceptionRepository.saveAndFlush(Existlbr);
     }
     @DeleteMapping("/ligneBonRecep/{id}")

@@ -34,9 +34,6 @@ public class MatierePremiere extends Product {
     @JoinColumn(name = "depot_id")
     private Depot depot;
 
-    @ManyToOne
-    @JoinColumn(name = "famille_id")
-    private Famille famille;
 
     @OneToMany(cascade = CascadeType.ALL, targetEntity = LigneBonReception.class, mappedBy = "matierepremier")
     @JsonIgnore

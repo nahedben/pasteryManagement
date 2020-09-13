@@ -13,8 +13,10 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.PermitAll;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/api/v1")
 public class LigneBonCommandeController {
@@ -22,7 +24,7 @@ public class LigneBonCommandeController {
     private LigneBonCommandeRepository ligneBonCommandeRep;
 
     @GetMapping("/ligneBCs")
-    public List<LigneBonCommande> retreiveAllBc(){
+    public List<LigneBonCommande> retreiveAllLgBc(){
         return ligneBonCommandeRep.findAll();
     }
     @GetMapping("/ligneBC/{id}")
@@ -31,9 +33,18 @@ public class LigneBonCommandeController {
     }
     @PostMapping("/ligneBC")
     public LigneBonCommande createLignBC(@RequestBody LigneBonCommande lbc){
-
         return ligneBonCommandeRep.saveAndFlush(lbc);
     }
+
+    @PostMapping("/ligneBC/prodBCID/{idprd}/{idBc}")
+    public LigneBonCommande createLignBCComp(@RequestBody LigneBonCommande lbc, @PathVariable Long idprd, @PathVariable Long idBc){
+        LigneBonCommande LbcCr=ligneBonCommandeRep.saveAndFlush(lbc);
+       LigneBonCommande lbprdAss= assignProduitToLbc(LbcCr.getId(),idprd);
+       LigneBonCommande  lbcprictotal= calculatTotPriceBcL(lbprdAss.getId());
+       LigneBonCommande lbcFinal = assignBonC(lbcprictotal.getId(),idBc);
+       return lbcFinal;
+    }
+
     @Autowired
     private ProduitRepository produitRepository;
 
@@ -44,7 +55,7 @@ public class LigneBonCommandeController {
      * @return
      */
     @PutMapping("/ligneBc/{idlbc}/AssignProduit/{idproduit}")
-    public LigneBonCommande AssignProduitToLbc(@PathVariable Long idlbc,@PathVariable Long idproduit){
+    public LigneBonCommande assignProduitToLbc(@PathVariable Long idlbc,@PathVariable Long idproduit){
         LigneBonCommande ExistLbc =ligneBonCommandeRep.getOne(idlbc);
         Produit AssignProd=produitRepository.getOne(idproduit);
         ExistLbc.setProduit(AssignProd);
@@ -87,10 +98,11 @@ public class LigneBonCommandeController {
      * @return
      */
     @PutMapping("/ligneBc/{idLbc}/AssignBonC/{idBc}")
-    public LigneBonCommande assignRecette(@PathVariable Long idLbc, @PathVariable Long idBc) {
+    public LigneBonCommande assignBonC(@PathVariable Long idLbc, @PathVariable Long idBc) {
         LigneBonCommande ExistLbc = ligneBonCommandeRep.getOne(idLbc);
         BonCommande AssignBc = bonCommandeRepository.getOne(idBc);
-        List<LigneBonCommande> LstLbc = AssignBc.getLigneBonCommande();
+        List<LigneBonCommande> LstLbc = new ArrayList<LigneBonCommande>();
+              LstLbc =  AssignBc.getLigneBonCommande();
         LstLbc.add(ExistLbc);
         AssignBc.setLigneBonCommande(LstLbc);
         ExistLbc.setBonCommande(AssignBc);

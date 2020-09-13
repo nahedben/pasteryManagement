@@ -36,6 +36,7 @@ public class BonCommande {
     private BigDecimal RestPaye;
     private String infoSupp;
     private long tempsRestantLiv;
+    private boolean BlFacturer;
 
     @ManyToOne
     @JoinColumn(name="client_id")

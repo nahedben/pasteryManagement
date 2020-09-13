@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.math.BigDecimal;
 import java.util.List;
 
+@CrossOrigin
 @RestController
 @RequestMapping("api/v1")
 public class MatierePremiereController {
@@ -31,11 +32,7 @@ public class MatierePremiereController {
     public MatierePremiere findMatPremWithID(@PathVariable Long id) {
         return matierePremierRepository.getOne(id);
     }
-    //Retreiving all the Matiere Premiere belonging to the same Famille
-    @GetMapping("matprems/famille/{id}")
-    public List<MatierePremiere> findMatPremByFamilleId( @PathVariable Long id){
-        return matierePremierRepository.findAllByFamilleId(id);
-    }
+
     //Retreiving all the Matiere in a specific Depot
     @GetMapping("matprems/depot/{id}")
     public List<MatierePremiere> findMatPremByDepotId(@PathVariable Long id){
@@ -52,7 +49,7 @@ public class MatierePremiereController {
     public MatierePremiere addNewMatPrem(@RequestBody MatierePremiere mat) {
         matierePremierRepository.save(mat);
         mat.setDepot(null);
-        mat.setFamille(null);
+//        mat.setFamille(null);
         mat.setQuantity(null);
         mat.setLigneBonReceptions(null);
         return matierePremierRepository.saveAndFlush(mat);
@@ -139,27 +136,21 @@ public class MatierePremiereController {
         return matierePremierRepository.saveAndFlush(mt);
     }
 
-    @Autowired
-    private FamilleRepository familleRepository;
+//    @Autowired
+//    private FamilleRepository familleRepository;
 
-    /***
-     * with assignFamille we assigne famille to the matierePremiere
-     *
-     * @param idmt
-     * @param idFam
-     * @return
-     */
-    @PutMapping("matprem/assignFamille/{idmt}/{idFam}")
-    public MatierePremiere assignFamille(@PathVariable Long idmt, @PathVariable Long idFam){
-        MatierePremiere mt = matierePremierRepository.getOne(idmt);
-        Famille fm= familleRepository.getOne(idFam);
-        List<MatierePremiere> lstMt= fm.getMatierePremieres();
-        lstMt.add(mt);
-        fm.setMatierePremieres(lstMt);
-        mt.setFamille(fm);
-        familleRepository.saveAndFlush(fm);
-        return matierePremierRepository.saveAndFlush(mt);
-    }
+
+//    @PutMapping("matprem/assignFamille/{idmt}/{idFam}")
+//    public MatierePremiere assignFamille(@PathVariable Long idmt, @PathVariable Long idFam){
+//        MatierePremiere mt = matierePremierRepository.getOne(idmt);
+//        Famille fm= familleRepository.getOne(idFam);
+//        List<MatierePremiere> lstMt= fm.getMatierePremieres();
+//        lstMt.add(mt);
+//        fm.setMatierePremieres(lstMt);
+//        mt.setFamille(fm);
+//        familleRepository.saveAndFlush(fm);
+//        return matierePremierRepository.saveAndFlush(mt);
+//    }
 
 
     //delete data link

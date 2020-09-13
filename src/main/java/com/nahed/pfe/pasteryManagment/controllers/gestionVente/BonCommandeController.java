@@ -12,8 +12,11 @@ import org.springframework.web.bind.annotation.*;
 import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/api/v1")
 public class BonCommandeController {
@@ -23,7 +26,12 @@ public class BonCommandeController {
     private LigneBonCommandeRepository ligneBonCommandeRepository;
     @GetMapping("/BonCommandes")
     public List<BonCommande> retreiveAllBC(){
-        return bonCommandeRepository.findAll();
+       List<BonCommande> lstBC= bonCommandeRepository.findAll();
+//       for( BonCommande b: lstBC){
+//           b.setBlFacturer(false);
+//       }
+
+        return lstBC;
     }
     @GetMapping("/BonCommande/{id}")
     public BonCommande retreiveBC(@PathVariable Long id){
@@ -42,6 +50,18 @@ public class BonCommandeController {
     @PostMapping("/BonCommande")
     public BonCommande createBC(@RequestBody BonCommande Bc) {
         return bonCommandeRepository.saveAndFlush(Bc);}
+
+    @PostMapping("/BonCommande/tpsRestInfo")
+    public BonCommande createBCwithInfTemps(@RequestBody BonCommande Bc) {
+        BonCommande bc = bonCommandeRepository.saveAndFlush(Bc);
+        System.out.println(bc);
+       BonCommande bcTps = calculeTempRestantBonCommande(bc,bc.getId());
+       System.out.println(bcTps);
+       BonCommande bdtpsInf= addtheInf(bc.getId(),bcTps);
+        return bdtpsInf;
+    }
+
+
 
     /***
      *
@@ -75,6 +95,9 @@ public class BonCommandeController {
         return bonCommandeRepository.saveAndFlush(ExistBc);
 
     }
+
+
+
     @PutMapping("/BonCommande/tempsRestant/{id}")
     public BonCommande updateTempsRestantBc(@PathVariable Long id){
         BonCommande ExistBc= bonCommandeRepository.getOne(id);
@@ -112,6 +135,9 @@ public class BonCommandeController {
          return bonCommandeRepository.saveAndFlush(ExistBc);
     }
 
+
+
+
     /**
      * methode pour calculer totalprice de bon de commande
      * @param id
@@ -135,7 +161,7 @@ public class BonCommandeController {
      * @return
      */
     @PutMapping("/BonCommande/{id}/restPayer")
-    public BonCommande CalculRestPayer(@PathVariable Long id){
+    public BonCommande calculRestPayer(@PathVariable Long id){
         BonCommande bc=bonCommandeRepository.getOne(id);
         BigDecimal tot=bc.getTotalPric();
         BigDecimal av=bc.getAvance();
@@ -147,6 +173,16 @@ public class BonCommandeController {
     @Autowired
     private ClientRepository clientRepositoriy;
 
+
+    //    /api/v1
+//    /BonCommandes
+//    /BonCommande/{id}
+//    /BonCommande/{id} =====>> calculeTempRestantBonCommande
+//    /BonCommande/tempsRestant/{id} =====>> updateTempsRestantBc
+//    /BonCommande/putInf/{id}======>> addtheInf
+//    /BonCommande/{id}/calculTotal =====>> calculTotalBC
+//    /BonCommande/{id}/restPayer =====> calculRestPayer
+//    BonCommande/{idbc}/Client/{idcl}=======>> assignClientToBC
     /**
      * Assign client au Bon Commande
      * @param idbc
@@ -163,7 +199,25 @@ public class BonCommandeController {
 
     @DeleteMapping("/BonCommande/{id}")
     public void removeBc(@PathVariable Long id){
+
+        List<LigneBonCommande> lstlg= getAllLigneInTheSameBC(id);
+        if(lstlg.size()!=0){
+            for(LigneBonCommande lg: lstlg){
+
+                ligneBonCommandeRepository.deleteById(lg.getId());
+            }
+        }
          bonCommandeRepository.deleteById(id);
     }
 
+
+@PutMapping("BonCommande/tot/restpay/assClt/{idBc}/{idCl}")
+public BonCommande calTotRestPayAssiCl(@PathVariable Long idBc,@PathVariable Long idCl){
+
+       BonCommande bcTot= calculTotalBC(idBc);
+       BonCommande bcRest= calculRestPayer(idBc);
+       BonCommande bcassCl= assignClientToBC(idBc,idCl);
+       return bcassCl;
+
+}
 }

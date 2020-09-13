@@ -11,14 +11,43 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+@CrossOrigin
 @RestController
 @RequestMapping("api/v1")
 public class LigneFactureController {
     @Autowired
     private LigneFactureRepository ligneFactureRepository;
+@Autowired
+private FactureRepository factureRepository;
+
+    @GetMapping("/ligneFacture/fct/{idfct}")
+    public List<LigneFacture> retreiveLgnFctFccture(@PathVariable Long idfct){
+//        List<LigneFacture> lst=ligneFactureRepository.findAll();
+//        System.out.println("La liste lgn:"+lst);
+//        List<LigneFacture> lstsearch= new ArrayList<>();
+//        for(LigneFacture e : lst){
+//           Long idf= e.getFacture().getId();
+//           if(idf == idfct) lstsearch.add(e);
+//
+//        }
+//        return lstsearch;
+
+
+        return ligneFactureRepository.findAllByFactureId(idfct);
+    }
+
+//       List<LigneFacture> lst=ligneFactureRepository.findAllByFactureId(idfct);
+//       System.out.println("La liste des lignee"+lst);
+//       return lst;
+
+    @DeleteMapping("/ligneFacture/{id}")
+    public void deleteLgFact(@PathVariable Long id){
+        ligneFactureRepository.deleteById(id);
+    }
 
     @PostMapping("/ligneFacture")
     public LigneFacture createLigneFacture(@RequestBody LigneFacture lgnFact){
@@ -28,7 +57,6 @@ public class LigneFactureController {
     public List<LigneFacture> retreiveAllLigneFacture(){
         return ligneFactureRepository.findAll();
     }
-
 
     @GetMapping("/ligneFacture/{id}")
     public ResponseEntity<LigneFacture> retriveLigneFacture(@PathVariable Long id){
@@ -88,12 +116,11 @@ public class LigneFactureController {
         ligneFactureRepository.saveAndFlush(ExistLf);
         if(ExistLf.getTotalPrice()!=null){
         calculeToalPriceLigne(ExistLf.getId());}
-
         return ligneFactureRepository.saveAndFlush(ExistLf);
     }
 
-    @Autowired
-    private FactureRepository factureRepository;
+//    @Autowired
+//    private FactureRepository factureRepository;
     @PutMapping("ligneFacture/{idlgfc}/AssignFacture/{idfc}")
     public LigneFacture AssignFactureToLignFct(@PathVariable Long idlgfc, @PathVariable Long idfc){
         LigneFacture lfct= ligneFactureRepository.getOne(idlgfc);
@@ -101,7 +128,4 @@ public class LigneFactureController {
         lfct.setFacture(fct);
         return ligneFactureRepository.saveAndFlush(lfct);
     }
-
-
-
 }
